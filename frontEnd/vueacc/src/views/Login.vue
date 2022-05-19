@@ -3,7 +3,7 @@
     <!-- <image src="../assets/background.jpg"></image> -->
     <div class="login-box">
       <span class="login-box-left">
-        <h1 style="margin-left:-150px">
+        <h1 style="margin-left: -150px">
           <img
             src="../assets/开关.png"
             width="40"
@@ -56,6 +56,8 @@ import { reactive, toRefs } from "vue";
 export default {
   setup() {
     const state = reactive({
+      username: "",
+      password: "",
       value1: true,
     });
 
