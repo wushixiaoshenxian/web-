@@ -7,3 +7,4 @@ import "element-plus/dist/index.css";
 
 // app.use(ElementPlus)
 createApp(App).use(store).use(router).use(ElementPlus).mount("#app");
+//$env:NODE_OPTIONS="--openssl-legacy-provider"

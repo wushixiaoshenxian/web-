@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Login from "../views/Login.vue";
-
+import Login from "../components/Login.vue";
+import Registered from "../components/Registered.vue";
+import Forgetpassword from "../components/Forgetpassword.vue";
+import Mainpage from "../components/Mainpage.vue";
 const routes = [
   {
     path: "/",
@@ -16,6 +18,21 @@ const routes = [
   //   component: () =>
   //     import(/* webpackChunkName: "about" */ "../views/About.vue"),
   // },
+  {
+    path: "/registered",
+    name: "registered",
+    component: Registered,
+  },
+  {
+    path: "/forgetpassword",
+    name: "forgetpassword",
+    component: Forgetpassword,
+  },
+  {
+    path: "/mainpage",
+    name: "mainpage",
+    component: Mainpage,    
+  }
 ];
 
 const router = createRouter({
