@@ -9,7 +9,8 @@ const expressJWT = require('express-jwt')
 var vertoken = require('./util/token')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var eventRouter = require('./routes/event');
+var messageRouter = require('./routes/message');
 var app = express();
 
 // 跨域
@@ -40,7 +41,7 @@ app.use(function (req, res, next) {
 app.use(expressJWT({
     secret: 'mes_qdhd_mobile_xhykjyxgs'
 }).unless({
-    path: ['/users/login','/users/checkBeforeRegister','/users/register','/users/changePassword']//除了这个地址，其他的URL都需要验证
+    path: ['/users/login', '/users/checkBeforeRegister', '/users/register', '/users/changePassword']//除了这个地址，其他的URL都需要验证
 }));
 //当token失效返回提示信息
 app.use(function (err, req, res, next) {
@@ -66,6 +67,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/event', eventRouter);
+app.use('/message', messageRouter);
 
 // catch 404 and forward to error handler
 // app.use(function (req, res, next) {
