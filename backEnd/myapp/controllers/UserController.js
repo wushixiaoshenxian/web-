@@ -146,7 +146,7 @@ anothorLogin = (req, res) => {
 
             res.send({
                 'code': 200,
-                'msg': '可用的id',
+                'msg': 'success',
                 'data': result
             })
 
