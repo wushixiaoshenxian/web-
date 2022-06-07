@@ -42,8 +42,6 @@ export default {
   setup() {
     const data = reactive({
       userid:"",
-      // Question: [],
-      // Answer: [],
       message:[],
       myanswer:[],
       active:0,
