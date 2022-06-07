@@ -36,8 +36,8 @@
           v-for="myfriend in data.friend"
           :key="myfriend.id"
           class="friend"
-          @click="getmessage(myfriend)"
-          >{{ myfriend.friend}}</el-menu-item
+          @click="getmessage(myfriend.friend)"
+          >{{ myfriend.friend }}</el-menu-item
         >
         <el-menu-item class="addfriend" @click="toaddfriend"
           >添加新朋友</el-menu-item
@@ -89,14 +89,21 @@
       <div class="middle">
         <div class="happything">
           <h2>愉快的事</h2>
+          <p v-for="item in data.happything">
+            {{ item.message }} ({{ item.value }})
+          </p>
         </div>
         <div class="sadthing">
           <h2>难过的事</h2>
+          <p v-for="item in data.sadthing">
+            {{ item.message }} ({{ item.value }})
+          </p>
         </div>
       </div>
       <footer>
         <h1 style="background-color: rgba(132, 201, 219)">
-          合计：<el-button class="btn-write" @click="towrite">记事</el-button>
+          合计：{{ data.sumValue
+          }}<el-button class="btn-write" @click="towrite">记事</el-button>
         </h1>
       </footer>
     </div>
@@ -139,15 +146,16 @@ export default {
       happything: [],
       sadthing: [],
       nowfriend: "",
+      sumValue: 0,
       writemessage: {
         type: "愉快的事",
         message: "",
-        value: "",
+        value: ""
       },
       setback: {
         email: "",
-        message: "",
-      },
+        message: ""
+      }
     });
     axios.interceptors.request.use(
       function (config) {
@@ -165,25 +173,26 @@ export default {
       }
     );
 
-    onMounted(()=>{
-        axios.get("http://localhost:3000/event/getFriend", {
-        params: {
-          id: data.userid,
-        },
-      })
-      .then((res) => {
-        if (res.data.code === 200) {
-          console.log(res.data);
-          data.friend=res.data.data;
-        //   for(var i in res.data.data)
-        //   data.friend.push(i.friend);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    })
-    
+    onMounted(() => {
+      axios
+        .get("http://localhost:3000/event/getFriend", {
+          params: {
+            id: data.userid
+          }
+        })
+        .then(res => {
+          if (res.data.code === 200) {
+            console.log(res.data);
+            data.friend = res.data.data;
+            //   for(var i in res.data.data)
+            //   data.friend.push(i.friend);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
     return { data };
   },
   methods: {
@@ -193,33 +202,39 @@ export default {
     },
     writeevent() {
       axios
-        .post("", {
+        .post("http://localhost:3000/event/addEvent", {
           id: this.data.userid,
           friend: this.data.nowfriend,
           event: this.data.writemessage.message,
-          value: +this.data.writemessage.value,
+          value: +this.data.writemessage.value
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code === 200) {
-            if (this.data.writemessage.type === "愉快的事")
-              this.data.happything.push({
-                message: this.data.writemessage.message,
-                value: +this.data.writemessage.value,
-              });
-            this.data.write = false;
+            location.reload();
+            // if (this.data.writemessage.type === "愉快的事")
+            //   this.data.happything.push({
+            //     message: this.data.writemessage.message,
+            //     value: +this.data.writemessage.value
+            //   });
+            // this.data.write = false;
           }
         });
     },
     setcallbackevent() {
       axios
-        .post("", {})
-        .then((res) => {
+        .post("http://localhost:3000/message/addMessage", {
+          id: this.data.userid,
+          address:this.data.setback.email,
+          message:this.data.setback.message
+        })
+        .then(res => {
           if (res.data.code === 200) {
             this.data.setback.email = "";
             this.data.setback.message = "";
+            alert("seuuess")
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -229,31 +244,35 @@ export default {
       this.data.nowfriend = event;
       this.data.happything.length = 0;
       this.data.sadthing.length = 0;
+      this.data.sumValue = 0;
       axios
-        .get("", {
+        .get("http://localhost:3000/event/getEvent", {
           params: {
             id: this.data.userid,
-            friend: event,
-          },
+            friend: event
+          }
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code === 200) {
-            for (var i in res.data.data) {
+            for (var i of res.data.data) {
+              console.log(i);
               if (i.value > 0) {
                 this.data.happything.push({
                   message: i.event,
-                  value: i.value,
+                  value: i.value
                 });
+                this.data.sumValue += i.value;
               } else {
                 this.data.sadthing.push({
                   message: i.event,
-                  value: i.value,
+                  value: i.value
                 });
+                this.data.sumValue += i.value;
               }
             }
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -271,26 +290,29 @@ export default {
       axios
         .post("http://localhost:3000/event/addFriend", {
           id: this.data.userid,
-          friend: this.data.newfriendname,
+          friend: this.data.newfriendname
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code === 200) {
             // this.friend.push({"friend":this.data.newfriendname});
             location.reload();
             this.data.addfriend = false;
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped lang="less">
 * {
   padding: 0;
   margin: 0;
+}
+a {
+  color: black;
 }
 .navigation {
   display: flex;
