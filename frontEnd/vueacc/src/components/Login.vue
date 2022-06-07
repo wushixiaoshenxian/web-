@@ -65,13 +65,14 @@
         </div>
       </span>
     </div>
-    <el-switch size="large" class="switch" v-model="state.value1" />
+    <el-switch size="large" class="switch" v-model="state.value1" @click="toQuestion"/>
   </div>
 </template>
 
 <script>
 // import { defineComponent } from '@vue/composition-api'
 import { reactive } from "vue";
+import md5 from "js-md5";
 import axios from "axios";
 export default {
   name: "hello",
@@ -86,20 +87,37 @@ export default {
         callback(new Error("用户名不能为空"));
       }
       else{
-        axios.post("",{
-          username:state.username,
-          password:state.password
-        }).then(function(response){
-        if(response)
+        axios.post("http://localhost:3000/users/login",{
+          id:state.username,
+          password:md5(state.password),
+        }).then(response=>{
+        if(response.data.code===200)
+        {  
+          let accessToken = response.data.token;//从后台返回的token
+ 	         localStorage.setItem('accessToken', accessToken);
            callback();
+        }
         else{
            callback(new Error("用户名或密码错误"));
         }
       }).catch(function(error){
         console.log(error);
       });
-      }
-    }
+      }};
+    //   axios.interceptors.request.use(function (config) {
+    // // 在发送请求之前做些什么
+    //     let accessToken = localStorage.getItem('accessToken');
+    //     if (accessToken && accessToken !== '') {
+    //         config.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    //     } 
+    // // 设置token end
+    //     return config;
+    //     }, function (error) {
+    // // 对请求错误做些什么
+    //     return Promise.reject(error);
+    //     });
+    //   }
+    // }
     const rules = reactive({
       username: [{
         validator: checkusername,
@@ -122,6 +140,10 @@ export default {
     };
   },
   methods: {
+    toQuestion(){
+      if(this.state.value1===false)
+       this.$router.push({ path: "/question" });
+    },
     toRegistered() {
       this.$router.push({ path: "/registered" });
     },
@@ -133,14 +155,8 @@ export default {
         //开启校验
         if (valid) {
           // 如果校验通过，请求接口，允许跳转
-          if(this.state.value1===true)
-          {
-            //正常跳转
-          }
-          else
-          {
-            //逝世状态跳转
-          }
+            this.$router.push({path:"/mainpage"});
+            localStorage.setItem('userid', this.state.username);
         } else {
           //校验不通过
           return false;

@@ -9,7 +9,7 @@
         align-center=true
       >
         <el-step title="输入用户名、邮箱"></el-step>
-        <el-step title="邮箱验证"></el-step>
+        <!-- <el-step title="邮箱验证"></el-step> -->
         <el-step title="设置新密码"></el-step>
       </el-steps>
       <div class="right-forgetpassword">
@@ -27,7 +27,7 @@
             >下一步</el-button
           >
         </div>
-        <div v-if="data.active===1" class="forgetpassword-step">
+        <!-- <div v-if="data.active===1" class="forgetpassword-step">
           <el-form :model="data" :rules="rules" ref="checkwordcheck">
             <el-form-item size="large" label="验证码:" prop="checkword"> 
               <el-input class="checkword" v-model="data.checkword" size="large"/>
@@ -36,17 +36,17 @@
               type="parmary"
               @click="send"
               class="btn-check"
-              ></el-button>
+              >发送验证码</el-button>
             </el-form-item>
           </el-form>
           <el-button
           size="large"
           type="parmary"
           @click="next2"
-          ></el-button>
-        </div>
-        <div v-if="data.active === 2" class="forgetpassword-step">
-          <el-form :model="data" :rules="rules" ref="passwordcheck">
+          >下一步</el-button>
+        </div> -->
+        <div v-if="data.active === 1" class="forgetpassword-step">
+          <el-form :model="data" :rules="rules" ref="passwordcheck" label-width="100px">
             <el-form-item label="新密码:" prop="newpassword">
               <el-input v-model="data.newpassword" />
             </el-form-item>
@@ -54,7 +54,7 @@
               <el-input v-model="data.ensure_newpassword" />
             </el-form-item>
           </el-form>
-          <el-button size="large" type="parmary" @click="next3">确定</el-button>
+          <el-button size="large" type="parmary" @click="next2">确定</el-button>
         </div>
       </div>
     </div>
@@ -63,7 +63,8 @@
 <script>
 //import { defineComponent } from '@vue/composition-api'
 import { reactive } from "vue";
-import axios from "axios"
+import axios from "axios";
+import md5 from 'js-md5';
 export default {
   setup() {
     const data = reactive({
@@ -72,31 +73,29 @@ export default {
       newpassword: "",
       ensure_newpassword: "",
       active: 0,
-      checkword:"",
+      // checkword:"",
     });
     const checkusername=(rule,value,callback)=>{
-       axios.post("",{
-           username:value,
-           email:data.email,
+       axios.get("http://localhost:3000/users/checkBeforeRegister",{
+        params:{
+              id:value,
+            }
        }).then(function(response){
-         if(response){
+         if(response.data.code===201){
            console.log(response);
            callback();
          }
          else
          {
-           callback(new Error("用户名或邮箱错误"));
+           callback(new Error("账号错误"));
          }
        });
     };
-    // const checkcheckword=(rule, value, callback)=>{
-
-    // };
     const checkpassword2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else {
-        if (value !== data.password) {
+        if (value !== data.newpassword) {
           callback(new Error("两次输入的密码不一致"));
         } else {
           callback();
@@ -133,7 +132,7 @@ export default {
       this.$refs["usernamecheck"].validate((valid) => {
         //开启校验
         if (valid) {
-          // 如果校验通过，请求接口，允许提交表单
+          // 如果校验通过，请求接口
           this.data.active++;
         } else {
           //校验不通过
@@ -141,28 +140,22 @@ export default {
         }
       });
     },
+    // next2(){
+    //       this.data.active++;
+    // },
     next2(){
-      this.$refs["checkwordcheck"].validate((valid) => {
-        //开启校验
-        if (valid) {
-          // 如果校验通过，请求接口，允许提交表单
-          this.data.active++;
-        } else {
-          //校验不通过
-          return false;
-        }
-      });
-    },
-    next3(){
         this.$refs["passwordcheck"].validate((valid) => {
         //开启校验
-        if (valid) {
+        console.log("chenggong");
+        if (valid){
           // 如果校验通过，请求接口，允许提交表单
-          axios.post("",{
-            newpassword:this.data.newpassword,
-          }).then(function(response){
+          console.log("成功");
+          axios.post("http://localhost:3000/users/changePassword",{
+            id: this.data.username,
+            password: md5(this.data.newpassword),
+          }).then(response=>{
             console.log(response);
-            if(response){
+            if(response.data.code===200){
               alert("修改密码成功");
               this.$router.push({path:"/"});
             }
@@ -172,14 +165,15 @@ export default {
             }
           }).catch(function(error){
             console.log(error);
-          })
-        } else {
+          });
+        return ;
+        } 
+        else {
           //校验不通过
+          console.log("fail");
           return false;
         }
       });
-        alert("密码修改成功");
-        this.$router.push({ path: "/" });
     }
   },
 };
@@ -191,7 +185,9 @@ export default {
 }
 .forgetpassword-box {
   height: 100%;
-  position: relative;  
+  position: relative;
+  background-image:  url(../assets/city.jpg);  
+  background-size: cover;
 }
 .step-box {
   box-sizing: border-box;
@@ -220,6 +216,7 @@ export default {
   border-top:1px solid black;
   border-bottom:1px solid black;
   border-right:1px solid black;
+  background-color: white;
 }
 .forgetpassword-step {
   padding-top: 100px;

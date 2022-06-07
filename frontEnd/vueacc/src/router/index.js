@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Login from "../components/Login.vue";
 import Registered from "../components/Registered.vue";
 import Forgetpassword from "../components/Forgetpassword.vue";
+import Question from "../components/Question.vue"
 import Mainpage from "../components/Mainpage.vue";
 const routes = [
   {
@@ -19,7 +20,6 @@ const routes = [
   //     import(/* webpackChunkName: "about" */ "../views/About.vue"),
   // },
   {
-<<<<<<< Updated upstream
     path: "/registered",
     name: "registered",
     component: Registered,
@@ -33,8 +33,8 @@ const routes = [
     path: "/mainpage",
     name: "mainpage",
     component: Mainpage,    
-  }
-=======
+  },
+  {
       path: "/home",
       name: "Home",
       // route level code-splitting
@@ -42,6 +42,11 @@ const routes = [
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/Home.vue"),
+    },
+    {
+      path:"/question",
+      name:"question",
+      component:Question,
     },
     {
       path: "/map",
@@ -52,12 +57,19 @@ const routes = [
       component: () =>
         import(/* webpackChunkName: "about" */ "../components/Map.vue"),
     },
->>>>>>> Stashed changes
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-
+// router.beforeEach((to, from, next) => {
+//   let token =localStorage.getItem('accessToken');
+//     if (to.path == '/' && token) {
+//       next('/mainpage');
+//     } 
+//     else {     
+//       next();
+//     }
+//   })
 export default router;

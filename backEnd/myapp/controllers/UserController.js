@@ -64,7 +64,7 @@ checkBeforeRegister = (req, res) => {
 register = (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
-    const information = req.body.infomation;
+    const information = req.body.information;
     const address = req.body.address;
     const password = req.body.password;
     var sql = `insert into t_information values (?,?,?,?,?);insert into t_login values (?,?,?)`;
