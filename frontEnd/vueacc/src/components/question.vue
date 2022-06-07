@@ -1,8 +1,9 @@
 <template>
 <div class="question-box" >
   <div class="question">
-    <h1 class="header">遗产发送</h1>
+    
   <div class="step1" v-if="data.active===0">
+    <h1 class="header">遗产发送</h1>
     <el-form>
     <el-form-item label="账号：">
     <el-input v-model="data.userid" />
@@ -18,8 +19,8 @@
   <div class="step2" v-if="data.active===1">
       <h1>一些问题</h1>
       <ul>
-        <li v-for="(question,index) in data.Question" :key="question.id">
-          <p>{{ question.question}}</p>
+        <li v-for="(item,index) in data.message" :key="index">
+          <p>{{item.question}}</p>
           <el-input v-model="data.myanswer[index]" />
         </li>
       </ul>
@@ -41,8 +42,9 @@ export default {
   setup() {
     const data = reactive({
       userid:"",
-      Question: [],
-      Answer: [],
+      // Question: [],
+      // Answer: [],
+      message:[],
       myanswer:[],
       active:0,
     });
@@ -51,25 +53,34 @@ export default {
   
   methods:{
     submit(){
-      for(var i=0;i<=Answer.length;i++){
-        if(Answer[i]!==myanswer[i])
+      console.log(this.data.message.length);
+      for(var i=0;i<this.data.message.length;i++){
+        console.log(this.data.message[i].answer);
+        if(this.data.message[i].answer!==this.data.myanswer[i])
         {alert("问题错误");
         return false;}
       }
-      alert("遗产发送成功");
+      axios.get(`http://101.43.85.170:8080/sendmail/${this.data.userid}`).then(res=>{
+        if(res.data.code==="0")
+        alert("邮件发送成功");
+      }).catch(error=>{
+        console.log(err);
+      });
+
     },
     next(){
       axios.get("http://localhost:3000/users/anothorLogin",{
         params:{
           id:this.data.userid,
         }
-      }).then(function(res){
+      }).then(res=>{
         if(res.data.code===200){
         this.data.active++;
-        for(var data1 in res.data.data){
-          this.data.Question.push(data1.question);
-          this.data.Answer.push(data1.answer);
-        }
+        // for(var i in res.data.data){
+        //   this.data.Question.push(i.question);
+        //   this.data.Answer.push(i.answer);
+        // }
+        this.data.message=res.data.data;
         }
         else
         alert("输入的账号有误");
@@ -107,5 +118,8 @@ export default {
 }
 .btn-question{
   margin-top:30px;
+}
+li{
+  list-style-type: none;
 }
 </style>
