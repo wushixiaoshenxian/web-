@@ -1,0 +1,26 @@
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username: renqingshiguceshi@163.com
+    # 不要填邮箱密码，要填授权码，不然会报错：535 Error: authentication failed
+    password: IZZOQIFGJQASKBAM
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          port: 994 #465或者994
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+      display:
+        sendmail: Javen
+        sendname: Spring Boot Guide Email
+  datasource:
+    username: manages
+    url: jdbc:mysql://124.221.205.51:3306/manages?characterEncoding=UTF-8&useSSL=false
+    password: 111111
+    driver-class-name: com.mysql.jdbc.Driver
