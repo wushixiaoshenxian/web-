@@ -116,8 +116,6 @@ export default {
     // // 对请求错误做些什么
     //     return Promise.reject(error);
     //     });
-    //   }
-    // }
     const rules = reactive({
       username: [{
         validator: checkusername,
