@@ -1,6 +1,5 @@
 var dbConfig = require('../util/dbconfig')
 var setToken = require('../util/token')
-var email = require('../util/email')
 
 login = (req, res) => {
     let id = req.body.id;
@@ -78,7 +77,6 @@ register = (req, res) => {
             })
             console.log('注册失败')
         } else {
-
             res.send({
                 'code': 200,
                 'msg': '注册成功'
@@ -135,4 +133,25 @@ changePassword = (req, res) => {
     dbConfig.sqlConnect(sql, sqlArr, callBack);
 }
 
-module.exports = { login, checkBeforeRegister, register, changePassword }
+
+anothorLogin = (req, res) => {
+    const { id } = req.query;
+    var sql = `select * from t_anotheruser where id = ? `;
+    var sqlArr = [id];
+    var callBack = (err, result) => {
+        if (err) {
+            console.log('err')
+        } else {
+            console.log(result)
+
+            res.send({
+                'code': 200,
+                'msg': 'success',
+                'data': result
+            })
+
+        }
+    }
+    dbConfig.sqlConnect(sql, sqlArr, callBack);
+}
+module.exports = { login, checkBeforeRegister, register, changePassword,anothorLogin }
