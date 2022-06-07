@@ -35,7 +35,6 @@
 </div>
 </template>
 <script>
-//import { defineComponent } from '@vue/composition-api'
 import { reactive } from "vue";
 import axios from "axios";
 export default {
