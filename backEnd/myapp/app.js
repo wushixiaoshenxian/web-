@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 app.use(expressJWT({
     secret: 'mes_qdhd_mobile_xhykjyxgs'
 }).unless({
-    path: ['/users/login', '/users/checkBeforeRegister', '/users/register', '/users/changePassword']//除了这个地址，其他的URL都需要验证
+    path: ['/users/login', '/users/checkBeforeRegister', '/users/register', '/users/changePassword',"/users/anothorLogin"]//除了这个地址，其他的URL都需要验证
 }));
 //当token失效返回提示信息
 app.use(function (err, req, res, next) {
